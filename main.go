@@ -28,31 +28,30 @@ func main() {
 
 	decodedHolidays := decodeHolidays(jsonEncodedHolidays)
 
-	currentTime := getCurrentDate()
-	fmt.Println(currentTime)
+	currentDate := getCurrentDate()
 
-	fmt.Printf("======= %T", decodedHolidays)
+	checkHolidays(decodedHolidays, currentDate)
 }
 
-// TODO: define current date
+type Holiday struct {
+	Date        string
+	LocalName   string
+	Name        string
+	CountryCode string
+	Fixed       bool
+	Global      bool
+	Counties    interface{}
+	LaunchYear  interface{}
+	Type        string
+}
+
 func getCurrentDate() time.Time {
-	dt := time.Now()
-	return dt
+	now := time.Now()
+	currentDate := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.UTC().Location())
+	return currentDate
 }
 
-// TODO: loop over the each holiday and define date
-func decodeHolidays(holidays string) interface{} {
-	type Holiday struct {
-		Date        string
-		LocalName   string
-		Name        string
-		CountryCode string
-		Fixed       bool
-		Global      bool
-		Counties    interface{}
-		LaunchYear  interface{}
-		Type        string
-	}
+func decodeHolidays(holidays string) []Holiday {
 	bs := []byte(holidays)
 
 	var holidaysDecoded []Holiday
@@ -66,6 +65,25 @@ func decodeHolidays(holidays string) interface{} {
 	return holidaysDecoded
 }
 
-// TODO: compare two dates
+func checkHolidays(holidays []Holiday, currentDate time.Time) {
+	const layoutISO = "2006-01-02"
+	for _, holiday := range holidays {
+		holidayDate, err := time.Parse(layoutISO, holiday.Date)
+		if err != nil {
+			fmt.Println(err)
+		}
+		if currentDate.Equal(holidayDate) {
+			fmt.Println("TODAY IS A HOLIDAY", holiday)
+			break
+		}
+		if currentDate.Before(holidayDate) {
+			fmt.Println("TODAY IS:", currentDate)
+			fmt.Println("NEXT HOLIDAY IS:", holiday)
+			break
+		}
+
+	}
+}
+
 // TODO: check if holiday date is on Fri or Mon
 // TODO: calc the whole length of holidays
