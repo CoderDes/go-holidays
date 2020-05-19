@@ -117,13 +117,8 @@ func checkHolidays(holidays []Holiday, currentDate time.Time) {
 		}
 		if currentDate.Equal(holidayDate) {
 			isToday = true
-			// TODO: try to DRY
-			closestHoliday = holiday
-			holidayLength, dateRange = calcHolidayLength(holidayDate)
-			break
 		}
-		if currentDate.Before(holidayDate) {
-			// TODO: try to DRY
+		if currentDate.Equal(holidayDate) || currentDate.Before(holidayDate) {
 			closestHoliday = holiday
 			holidayLength, dateRange = calcHolidayLength(holidayDate)
 			break
