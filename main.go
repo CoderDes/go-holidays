@@ -59,46 +59,7 @@ func decodeHolidays(holidays string) []Holiday {
 	if err != nil {
 		fmt.Println(err)
 	}
-	// ================ DELETE
-	// testStruct := Holiday{
-	// 	Date:        "2020-05-21",
-	// 	LocalName:   "TEST THURSDAY",
-	// 	Name:        "TEST THURSDAY",
-	// 	CountryCode: "UA",
-	// 	Fixed:       false,
-	// 	Global:      false,
-	// 	Counties:    nil,
-	// 	LaunchYear:  nil,
-	// 	Type:        "TEST TYPE",
-	// }
-	// testStruct := Holiday{
-	// 	Date:        "2020-05-19",
-	// 	LocalName:   "TEST ORDINARY",
-	// 	Name:        "TEST ORDINARY",
-	// 	CountryCode: "UA",
-	// 	Fixed:       false,
-	// 	Global:      false,
-	// 	Counties:    nil,
-	// 	LaunchYear:  nil,
-	// 	Type:        "TEST TYPE",
-	// }
-	// testStruct := Holiday{
-	// 	Date:        "2020-05-23",
-	// 	LocalName:   "TEST SATURDAY",
-	// 	Name:        "TEST SATURDAY",
-	// 	CountryCode: "UA",
-	// 	Fixed:       false,
-	// 	Global:      false,
-	// 	Counties:    nil,
-	// 	LaunchYear:  nil,
-	// 	Type:        "TEST TYPE",
-	// }
-	// testSlice := []Holiday{testStruct}
-	// for _, holiday := range holidaysDecoded {
-	// 	testSlice = append(testSlice, holiday)
-	// }
-	// holidaysDecoded = testSlice
-	// ======================== DELETE
+
 	return holidaysDecoded
 }
 
