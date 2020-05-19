@@ -120,52 +120,53 @@ func checkHolidays(holidays []Holiday, currentDate time.Time) {
 		}
 		if currentDate.Equal(holidayDate) || currentDate.Before(holidayDate) {
 			closestHoliday = holiday
-			holidayLength, dateRange = calcHolidayLength(holidayDate)
+			holidayLength, dateRange = defineHolidayLength(holidayDate)
 			break
 		}
 	}
 	conclusion(closestHoliday, holidayLength, dateRange, isToday)
 }
 
-func calcHolidayLength(holidayDate time.Time) (float64, string) {
-	const hoursInADay = 24
+func defineHolidayLength(holidayDate time.Time) (float64, string) {
 	var holidayStart time.Time
 	var holidayEnd time.Time
 	var holidayDays float64
 	var dateRange string
 
 	holidayWeekday := holidayDate.Weekday()
-	// TODO: DRY IT !!!
+
 	switch holidayWeekday.String() {
 	case "Monday":
 		holidayStart = holidayDate.AddDate(0, 0, -2)
 		holidayEnd = holidayDate.AddDate(0, 0, 1)
-		// TODO: to separate func
-		dateRange = fmt.Sprintf("From %v %v to %v %v", holidayStart.Day(), holidayStart.Month(), holidayEnd.Day(), holidayEnd.Month())
-		holidayDays = holidayEnd.Sub(holidayStart).Hours() / hoursInADay
+		dateRange, holidayDays = calcDuration(holidayStart, holidayEnd)
 	case "Friday":
+		holidayStart = holidayDate
 		holidayEnd = holidayDate.AddDate(0, 0, 3)
-		// TODO: to separate func
-		dateRange = fmt.Sprintf("From %v %v to %v %v", holidayStart.Day(), holidayStart.Month(), holidayEnd.Day(), holidayEnd.Month())
-		holidayDays = holidayEnd.Sub(holidayDate).Hours() / hoursInADay
+		dateRange, holidayDays = calcDuration(holidayStart, holidayEnd)
 	case "Saturday":
 		holidayStart = holidayDate
 		holidayEnd = holidayDate.AddDate(0, 0, 3)
-		// TODO: to separate func
-		dateRange = fmt.Sprintf("From %v %v to %v %v", holidayStart.Day(), holidayStart.Month(), holidayEnd.Day(), holidayEnd.Month())
-		holidayDays = holidayEnd.Sub(holidayStart).Hours() / hoursInADay
+		dateRange, holidayDays = calcDuration(holidayStart, holidayEnd)
 	case "Sunday":
 		holidayStart = holidayDate.AddDate(0, 0, -1)
 		holidayEnd = holidayDate.AddDate(0, 0, 2)
-		// TODO: to separate func
-		dateRange = fmt.Sprintf("From %v %v to %v %v", holidayStart.Day(), holidayStart.Month(), holidayEnd.Day(), holidayEnd.Month())
-		holidayDays = holidayEnd.Sub(holidayStart).Hours() / hoursInADay
+		dateRange, holidayDays = calcDuration(holidayStart, holidayEnd)
 	default:
+		holidayStart = holidayDate
 		holidayEnd = holidayDate.AddDate(0, 0, 1)
-		dateRange = fmt.Sprintf("on %v of %v", holidayDate.Day(), holidayDate.Month())
-		holidayDays = holidayEnd.Sub(holidayDate).Hours() / hoursInADay
+		dateRange, holidayDays = calcDuration(holidayStart, holidayEnd)
 	}
 	return holidayDays, dateRange
+}
+
+func calcDuration(start, end time.Time) (string, float64) {
+	const hoursInADay = 24
+
+	dateRange := fmt.Sprintf("From %v %v to %v %v", start.Day(), start.Month(), end.Day(), end.Month())
+	holidayDays := end.Sub(start).Hours() / hoursInADay
+
+	return dateRange, holidayDays
 }
 
 func conclusion(holiday Holiday, lengthInDays float64, dateRange string, isToday bool) {
