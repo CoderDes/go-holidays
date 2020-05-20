@@ -31,7 +31,7 @@ func main() {
 	checkHolidays(decodedHolidays, currentDate)
 }
 
-type Holiday struct {
+type holiday struct {
 	Date        string
 	LocalName   string
 	Name        string
@@ -49,10 +49,10 @@ func getCurrentDate() time.Time {
 	return currentDate
 }
 
-func decodeHolidays(holidays string) []Holiday {
+func decodeHolidays(holidays string) []holiday {
 	bs := []byte(holidays)
 
-	var holidaysDecoded []Holiday
+	var holidaysDecoded []holiday
 
 	err := json.Unmarshal(bs, &holidaysDecoded)
 
@@ -63,10 +63,10 @@ func decodeHolidays(holidays string) []Holiday {
 	return holidaysDecoded
 }
 
-func checkHolidays(holidays []Holiday, currentDate time.Time) {
+func checkHolidays(holidays []holiday, currentDate time.Time) {
 	const layoutISO = "2006-01-02"
 	var isToday bool
-	var closestHoliday Holiday
+	var closestHoliday holiday
 	var holidayLength float64
 	var dateRange string
 
@@ -130,7 +130,7 @@ func calcDuration(start, end time.Time) (string, float64) {
 	return dateRange, holidayDays
 }
 
-func conclusion(holiday Holiday, lengthInDays float64, dateRange string, isToday bool) {
+func conclusion(holiday holiday, lengthInDays float64, dateRange string, isToday bool) {
 	todayOrNot := "The closest holiday"
 	dayOrDays := "days"
 
