@@ -25,7 +25,56 @@ func ExamineEmployees() {
 
 	fmt.Println("Successfully connected to db")
 
-	rows, err := db.Query("SELECT * FROM employees")
+	type queryType struct {
+		query    string
+		question string
+	}
+
+	queries := []queryType{
+		{
+			query:    "SELECT title, first_name, last_name, salary FROM dept_manager INNER JOIN titles ON dept_manager.emp_no = titles.emp_no INNER JOIN salaries ON dept_manager.emp_no = salaries.emp_no INNER JOIN employees ON dept_manager.emp_no = employees.emp_no WHERE title LIKE '%Manager%';",
+			question: "Find all current managers with their title, first/last name, current salary. Continue? y or n: ",
+		},
+		{
+			query:    "SELECT dept_name, title, first_name, last_name, EXTRACT(YEAR FROM dept_emp.to_date) - EXTRACT(YEAR FROM dept_emp.from_date) AS how_may_years FROM employees INNER JOIN dept_emp ON employees.emp_no = dept_emp.emp_no INNER JOIN departments ON dept_emp.dept_no = departments.dept_no INNER JOIN titles ON employees.emp_no = titles.emp_no INNER JOIN salaries ON employees.emp_no = salaries.emp_no;",
+			question: "Find all employees (title, first/last name, hire date, experience in years). Continue? y or n: ",
+		},
+		{
+			query:    "SELECT COUNT(dept_emp.dept_no) AS employyes_count, SUM(salary) AS salary_sum FROM departments INNER JOIN dept_emp ON departments.dept_no = dept_emp.dept_no INNER JOIN salaries ON dept_emp.emp_no = salaries.emp_no;",
+			question: "Find all departments, their employee count, sum salary. Continue? y or n: ",
+		},
+	}
+
+	for _, q := range queries {
+		var answerToCont string
+
+		fmt.Print(q.question)
+		fmt.Fscan(os.Stdin, &answerToCont)
+
+		if answerToCont == "y" {
+			requestToDB(db, q.query)
+		} else {
+			continue
+		}
+	}
+
+}
+
+func askCredsToConnect() (string, string, string) {
+	var user, pass, db string
+	fmt.Print("Enter database user: ")
+	fmt.Fscan(os.Stdin, &user)
+	fmt.Print("Enter password: ")
+	fmt.Fscan(os.Stdin, &pass)
+	fmt.Print("Enter database name you want connect to: ")
+	fmt.Fscan(os.Stdin, &db)
+
+	return user, pass, db
+}
+
+func requestToDB(db *sql.DB, query string) {
+
+	rows, err := db.Query(query)
 
 	if err != nil {
 		panic(err.Error())
@@ -68,29 +117,4 @@ func ExamineEmployees() {
 	if err = rows.Err(); err != nil {
 		panic(err.Error())
 	}
-
-}
-
-func askCredsToConnect() (string, string, string) {
-	var user, pass, db string
-	fmt.Print("Enter database user: ")
-	fmt.Fscan(os.Stdin, &user)
-	fmt.Print("Enter password: ")
-	fmt.Fscan(os.Stdin, &pass)
-	fmt.Print("Enter database name you want connect to: ")
-	fmt.Fscan(os.Stdin, &db)
-
-	return user, pass, db
-}
-
-func selectCurrentManagers() {
-
-}
-
-func findAllEmployees() {
-
-}
-
-func findAllDepartments() {
-
 }
