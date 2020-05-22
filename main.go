@@ -7,10 +7,17 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/EugZ/go-holidays/ask"
 	"github.com/EugZ/go-holidays/employees"
 )
 
 func main() {
+	toStart := ask.DefinePart(1, "Holiday API")
+
+	if !toStart {
+		return
+	}
+
 	resp, err := http.Get("https://date.nager.at/api/v2/publicholidays/2020/UA")
 
 	if err != nil {
@@ -31,6 +38,14 @@ func main() {
 	currentDate := getCurrentDate()
 
 	checkHolidays(decodedHolidays, currentDate)
+
+	toContinue := ask.DefinePart(2, "MySQL employees database")
+
+	if !toContinue {
+		return
+	}
+
+	employees.ExamineEmployees()
 }
 
 type holiday struct {
@@ -146,6 +161,4 @@ func conclusion(holiday holiday, lengthInDays float64, dateRange string, isToday
 	output := fmt.Sprintf("%v is a %v on %v. It will last %v %v: %v.", todayOrNot, holiday.Name, holiday.Date, lengthInDays, dayOrDays, dateRange)
 
 	fmt.Println(output)
-
-	employees.ExamineEmployees()
 }
