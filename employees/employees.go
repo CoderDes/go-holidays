@@ -12,18 +12,8 @@ func ExamineEmployees() {
 	fmt.Println("=============")
 	fmt.Println("Employees part")
 
-	// TODO: move to separate function
-	var dbUser string
-	var dbPass string
-	var dbName string
-	fmt.Print("Enter database user: ")
-	fmt.Fscan(os.Stdin, &dbUser)
-	fmt.Print("Enter password: ")
-	fmt.Fscan(os.Stdin, &dbPass)
-	fmt.Print("Enter database name you want connect to: ")
-	fmt.Fscan(os.Stdin, &dbName)
+	dbUser, dbPass, dbName := askCredsToConnect()
 
-	// TODO: ask for user and DBname from connection
 	dbAddr := fmt.Sprintf("%v:%v@tcp(127.0.0.1:3306)/%v", dbUser, dbPass, dbName)
 	db, err := sql.Open("mysql", dbAddr)
 
@@ -79,6 +69,18 @@ func ExamineEmployees() {
 		panic(err.Error())
 	}
 
+}
+
+func askCredsToConnect() (string, string, string) {
+	var user, pass, db string
+	fmt.Print("Enter database user: ")
+	fmt.Fscan(os.Stdin, &user)
+	fmt.Print("Enter password: ")
+	fmt.Fscan(os.Stdin, &pass)
+	fmt.Print("Enter database name you want connect to: ")
+	fmt.Fscan(os.Stdin, &db)
+
+	return user, pass, db
 }
 
 func selectCurrentManagers() {
