@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"net/http"
 	"time"
+
+	"github.com/EugZ/go-holidays/employees"
 )
 
 func main() {
@@ -144,4 +146,6 @@ func conclusion(holiday holiday, lengthInDays float64, dateRange string, isToday
 	output := fmt.Sprintf("%v is a %v on %v. It will last %v %v: %v.", todayOrNot, holiday.Name, holiday.Date, lengthInDays, dayOrDays, dateRange)
 
 	fmt.Println(output)
+
+	employees.ExamineEmployees()
 }
